@@ -1,6 +1,6 @@
-<?php require_once getcwd()."/libraries/constant.php"; ?>
-<link rel="stylesheet" href="<?php echo SITE_URL;?>/css/style.css">
-<form id="login" action="<?php echo SITE_URL;?>controller/controller.php?method=handleLogin" method="post">
+<?php require_once "/var/www/ChatSystem/trunk/libraries/constant.php"; ?>
+<link rel="stylesheet" href="<?php echo SITE_URL;?>/./css/style.css">
+<form id="login" action="../controller/controller.php?method=handleLogin" method="post">
     <h1 id="ff-proof" class="ribbon">Chat Server &nbsp;&nbsp;</h1>
     <div class="apple">
     	<div class="top"><span></span></div>

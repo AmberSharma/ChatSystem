@@ -1,7 +1,7 @@
 <?php
 
-require_once "../libraries/constant.php";
-require_once SITEPATH.'model/singleton.php';
+require_once getcwd()."/../libraries/constant.php";
+require_once SITE_PATH.'/../model/singleton.php';
 
 
 abstract class model {

@@ -1,4 +1,5 @@
 <?php
+//echo "hello";die;
 /*
  * FileName: Validate.php
 * Version: 1.0

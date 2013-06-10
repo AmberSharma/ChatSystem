@@ -1,7 +1,9 @@
-<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+
 <?php
-require_once '../libraries/constant.php';
-require_once SITEPATH.'/libraries/validate.php';
+
+require_once getcwd()."/../libraries/constant.php";
+//echo SITE_URL;die;
+require_once getcwd().'/../libraries/validate.php';
 
 ini_set("display_errors", "1");
 
@@ -14,6 +16,8 @@ class MyClass {
 	
 	public function handleLogin() 
 	{
+//echo "hrflkjs";die;
+
         
         /* Validate username password */
 		$obj = new validate();
@@ -32,7 +36,7 @@ class MyClass {
 		}
 		else
 		{
-			require_once SITEPATH.'/model/gettersettermodel.php';
+			require_once SITE_PATH.'/../model/gettersettermodel.php';
         		/* Getting rid of sql injection */
 				$objInitiateUser = new Register ();
 				$objInitiateUser->setUsername($_POST['username']);
@@ -40,12 +44,14 @@ class MyClass {
         		
         		$a=$objInitiateUser->login () ;
         		if ($a == 1) 
-				{
+			{
+				$b=$objInitiateUser->updateLogged () ;
+				//print_r($a);die;
             			$this->showUserPanel();
         		}
         		else 
 			{
-            			require_once(SITEPATH."View/login.php");
+            			require_once(SITE_PATH."/../login.php");
         		}
 		}
     	}
@@ -54,187 +60,49 @@ class MyClass {
          Function to add FAQ called from faq.php
        -----------------------------------------------------
     */
-    
+    	public function loggedusers ()
+	{	
+		require_once SITE_PATH.'/../model/gettersettermodel.php';
+		$objInitiateUser = new Register ();
+		$b=$objInitiateUser->loggedUsers () ;
+		//print_r($b);die;
+		for($i =0 ;$i < count($b) ;$i ++)
+		{
+			$arr[] = $b[$i]["username"];
+		}
+		echo json_encode($arr);
+		//require_once("../View/chat.php");
+	}
+	public function logout ()
+	{	
+		require_once SITE_PATH.'/../model/gettersettermodel.php';
+		$objInitiateUser = new Register ();
+		$b=$objInitiateUser->logOut () ;
+		if($b == "1")
+		{
+			header("Location:".SITE_URL);
+		}
+	}
+	public function comment ()
+	{	
+		
+		require_once SITE_PATH.'/../model/gettersettermodel.php';
+		$objInitiateUser = new Register ();
+		$objInitiateUser->setMessage($_REQUEST['usermsg']);
+		$b=$objInitiateUser->Comment () ;
+		if(!empty($b))
+		{
+			$arr[] = $b[0]["username"];
+			$arr[] = $b[0]["message"];
+			
+			echo json_encode($arr);
+		}
+		
+	}
 	public function showUserPanel ()
 	{
 		
 		require_once("../View/chat.php");
-	}
-	public function rolefetch ()
-	{
-	
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->findRole();
-		echo "Select Role:<select name='rolename' id='role' onchange='setrole()'>";
-		echo "<option value='-1'>---Select---</option>";
-		for($i =0 ; $i < count($fetch) ; $i++)
-		{
-		echo "<option value='" . $fetch[$i]['id'] ."'>" . $fetch[$i]['role'] ."</option>";
-		    }
-				echo "</select>";
-				echo "<br />";
-				echo "<br />";
-				//echo "<input type='button' value='".$lang->ASSIGN."' onclick='assign()'/>";
-	}
-	
-	public function findusers ()
-	{
-	
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->findUser();
-		echo "Select User:<select name='rolename' id='user' onchange='setuser()' >";
-		echo "<option value='-1'>---Select---</option>";
-		for($i =0 ; $i < count($fetch) ; $i++)
-		{
-		echo "<option value='" . $fetch[$i]['id'] ."'>" . ucfirst($fetch[$i]['name']) ."</option>";
-		}
-		echo "</select>";
-		echo "<br />";
-		echo "<br />";
-		echo "<input type='button' value='Add Permission' onclick='addpermissionform()'/>";
-		echo "<input type='button' value='Add Role' onclick='addrole()'/>";
-		echo "<input type='button' value='Delete Role' onclick='deleterole()'/>";
-		echo "<input type='button' value='Delete Default' onclick='deletedefault()'/>";
-		echo "<input type='button' value='Fetch Roles' onclick='fetchrole()'/>";
-	}
-	
-	public function findscreen ()
-	{
-	
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->findScreen();
-		
-		require_once("../View/findScreen.php");
-		
-		
-		
-	}
-
-	public function addrole ()
-	{
-		
-		if(($_REQUEST['role'] == 'undefined') || ($_REQUEST['user'] == 'undefined'))
-		{
-			die ("Either Role or User Not Specified!!!");
-		}
-		else
-		{
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->addRole();
-		if($fetch == "1")
-		{
-			echo "Inserted";
-		}
-		}
-		
-		
-	}
-
-	public function deleterole ()
-	{
-		
-		if($_REQUEST['user'] == 'undefined')
-		{
-			die ("User Not Specified!!!");
-		}
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->deleteRole();
-		if($fetch == "1")
-		{
-			echo "Deleted";
-		}
-		
-		
-		
-	}
-
-	public function deletedefault ()
-	{
-		
-		if($_REQUEST['user'] == 'undefined')
-		{
-			die ("User Not Specified!!!");
-		}
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->deleteDefault();
-		if($fetch == "1")
-		{
-			echo "Deleted";
-		}
-		
-		
-		
-	}
-
-	public function addpermissionform ()
-	{
-	
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->addpermissionform();
-		
-		require_once("../View/finddefaultScreen.php");
-		
-		
-		
-	}
-
-	public function addpermission ()
-	{
-	
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->addpermission($_REQUEST);
-		
-		//require_once("../View/finddefaultScreen.php");
-		
-		
-		
-	}
-
-	public function assignselection ()
-	{
-		
-		
-		require_once("../model/gettersettermodel.php");
-		
-		$find=new Register();
-		$fetch = $find->assignRole($_REQUEST);
-		
-	}
-	
-	
-	public function adduser ()
-	{
-		
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->addUser();
-		if($fetch=="updated")
-		{
-			echo $fetch;
-			
-		}
-	}
-	
-	public function fetchroles ()
-	{
-	
-		if($_REQUEST['user'] == 'undefined')
-		{
-			die ("User Not Specified!!!");
-		}
-		require_once("../model/gettersettermodel.php");
-		$find=new Register();
-		$fetch = $find->fetchRoles();
-		require_once("../View/userscreen.php");
-		
 	}
 	
 
