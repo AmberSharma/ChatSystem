@@ -1,14 +1,13 @@
+<?php require_once "/var/www/ChatSystem/trunk/libraries/constant.php"; ?>
 <script src="<?php echo SITE_URL;?>/js/jquery.tools.min.js"></script>
+<?php
+//header("Refresh: 1; http://www.chatsystem.com/View/chat.php");
+?>
+
 <script>
 $(document).ready(function()
 {
-$('input#search').keypress(function()
-{
-       if($(this).keyCode == "13")
-       {
-           alert("fhnkjd");
-       }     
-});
+
 	$.ajax
 	({
 		type: "POST",
@@ -45,7 +44,7 @@ function entercomment()
          	{
 			var resp=jQuery.parseJSON($.trim(data));
 			$.each(resp, function(key, val) {
-			$("#chatmessage").append("<?php echo ucfirst("+val+"); ?>");
+			$("#chatmessage").append(val);
 			$("#chatmessage").append(" ");	
 			});
          	},
