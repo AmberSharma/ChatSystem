@@ -25,7 +25,7 @@ class MyClass {
 		$obj->validator("password",$_POST ["password"], 'required#minlength=5#maxlength=25','Password Required#Password should not be less than 5 characters long#Password should not be more than 25 chracter long');
         //$authObject->validateLogin ();
     		$error=$obj->result();
-		print_r($error);
+		//print_r($error);
 		if(!empty($error['username']))
 		{			
 			header("Location:../View/comment.php?user=".$error['username']);
@@ -66,12 +66,11 @@ class MyClass {
 		$objInitiateUser = new Register ();
 		$b=$objInitiateUser->loggedUsers () ;
 		//print_r($b);die;
-		for($i =0 ;$i < count($b) ;$i ++)
+		if(!empty($b))
 		{
-			$arr[] = $b[$i]["username"];
+			require_once SITE_PATH.'/../View/loggedusers.php';
 		}
-		echo json_encode($arr);
-		//require_once("../View/chat.php");
+		
 	}
 	public function logout ()
 	{	
@@ -85,10 +84,25 @@ class MyClass {
 	}
 	public function comment ()
 	{	
-		
+		//print_r($_REQUEST);
 		require_once SITE_PATH.'/../model/gettersettermodel.php';
 		$objInitiateUser = new Register ();
-		$objInitiateUser->setMessage($_REQUEST['usermsg']);
+		if(!empty($_REQUEST['usermsg']))
+		{
+			$objInitiateUser->setMessage($_REQUEST['usermsg']);
+		}
+		else
+		{
+			$objInitiateUser->setMessage('');
+		}
+		if(!empty($_REQUEST['recid']))
+		{
+			$objInitiateUser->setRecid($_REQUEST['recid']);
+		}
+		else
+		{
+			$objInitiateUser->setMessage('');
+		}
 		$b=$objInitiateUser->Comment () ;
 		if(!empty($b))
 		{
